@@ -1,8 +1,0 @@
-dependencies
-npm install eslint @eslint/js prettier eslint-config-prettier eslint-plugin-prettier -D
-
-//eslint scripts
-npm run lint - to catch bugs in specific folders or files
-npm run lint:fix - to automatically fix issues in specific folders or files
-npm run format - to format specific folders or files using Prettier
-npm run format:check - to check if specific folders or files are formatted according to Prettier rules
