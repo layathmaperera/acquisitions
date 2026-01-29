@@ -1,3 +1,9 @@
 node_modules
 commands
+.env
 .env.*
+!.env.example
+logs
+*.log
+.neon_local
+.neon_local/

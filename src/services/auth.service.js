@@ -1,6 +1,6 @@
+// javascript
 import bcrypt from 'bcrypt';
 import logger from '#config/logger.js';
-import { eq } from 'drizzle-orm';
 import { db } from '#config/database.js';
 import { users } from '#models/user.model.js';
 
@@ -24,11 +24,12 @@ export const comparePassword = async (password, hashedPassword) => {
 
 export const authenticateUser = async ({ email, password }) => {
   try {
-    const [user] = await db
+    const rows = await db
       .select()
       .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
+      .where(users.email.eq(email));
+
+    const user = rows[0];
 
     if (!user) {
       throw new Error('User not found');
@@ -49,24 +50,16 @@ export const authenticateUser = async ({ email, password }) => {
 
 export const createUser = async ({ name, email, password, role = 'user' }) => {
   try {
-    const existingUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-
-    if (existingUser.length > 0) {
-      throw new Error('User already exists');
-    }
-
     const hashedPassword = await hashPassword(password);
+
+    console.log('Attempting to insert user:', { name, email, role }); // Debug log
 
     const [newUser] = await db
       .insert(users)
       .values({
         name,
         email,
-        password: hashedPassword, // ✅ MATCHES DB
+        password: hashedPassword,
         role
       })
       .returning({
@@ -76,11 +69,27 @@ export const createUser = async ({ name, email, password, role = 'user' }) => {
         role: users.role
       });
 
+    console.log('User created successfully:', newUser); // Debug log
     return newUser;
-
   } catch (error) {
+    // Log the FULL error object
+    console.error('Full error:', JSON.stringify(error, null, 2));
+    console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Error detail:', error.detail);
+    console.error('Error cause:', error.cause);
+
+    const isUniqueViolation =
+      error?.code === '23505' ||
+      error?.cause?.sourceError?.code === '23505' ||
+      (typeof error?.message === 'string' && error.message.toLowerCase().includes('duplicate'));
+
+    if (isUniqueViolation) {
+      logger.info('Create user aborted - user already exists', { email });
+      throw new Error('User already exists');
+    }
+
     logger.error('Create user failed', error);
     throw error;
   }
 };
-
