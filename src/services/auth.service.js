@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import logger from '#config/logger.js';
 import { db } from '#config/database.js';
 import { users } from '#models/user.model.js';
-
+import { eq } from "drizzle-orm";
 export const hashPassword = async (password) => {
   try {
     return bcrypt.hash(password, 10);
@@ -27,7 +27,7 @@ export const authenticateUser = async ({ email, password }) => {
     const rows = await db
       .select()
       .from(users)
-      .where(users.email.eq(email));
+      .where(eq(users.email, email));
 
     const user = rows[0];
 
