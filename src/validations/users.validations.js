@@ -7,5 +7,5 @@ export const userIdSchema = z.object({
 export const updateUserSchema = z.object({
   name: z.string().min(2).max(100).trim().optional(),
   email: z.email().toLowerCase().trim().optional(),
-  role: z.enum(['user', 'admin']).optional(),
+  role: z.enum(['citizen', 'official', 'admin']).optional(),
 });

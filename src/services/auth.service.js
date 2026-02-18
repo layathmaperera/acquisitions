@@ -48,7 +48,7 @@ export const authenticateUser = async ({ email, password }) => {
   }
 };
 
-export const createUser = async ({ name, email, password, role = 'user' }) => {
+export const createUser = async ({ name, email, password, role = 'citizen' }) => {
   try {
     const hashedPassword = await hashPassword(password);
 

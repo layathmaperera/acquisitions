@@ -13,9 +13,13 @@ const securityMiddleware = async (req, res, next) => {
         limit = 20;
         message = 'Admin request limit exceeded. Slow down';
         break;
-      case 'user':
+      case 'official':
+        limit = 15;
+        message = 'Official request limit exceeded. Slow down';
+        break;
+      case 'citizen':
         limit = 10;
-        message = 'User request limit exceeded. Slow down';
+        message = 'Citizen request limit exceeded. Slow down';
         break;
       case 'guest':
       default:

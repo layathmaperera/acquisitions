@@ -8,6 +8,13 @@
       "when": 1769491120862,
       "tag": "0000_sloppy_mentor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771457751889,
+      "tag": "0001_clumsy_robin_chapel",
+      "breakpoints": true
     }
   ]
 }

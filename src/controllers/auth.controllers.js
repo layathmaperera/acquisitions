@@ -17,10 +17,10 @@ export const signup = async (req, res, next) => {
       });
     }
 
-    const { name, email, password, role } = validationResult.data;
+    const { name, email, password } = validationResult.data;
 
-    // Create new user
-    const user = await createUser({ name, email, password, role });
+    // Create new user (role defaults to 'citizen' — no self-assignment)
+    const user = await createUser({ name, email, password });
 
     // Create JWT token
     const token = jwttoken.sign({ id: user.id, email: user.email, role: user.role });
@@ -33,7 +33,8 @@ export const signup = async (req, res, next) => {
     // Respond with user info
     res.status(201).json({
       message: 'Account created successfully',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      token
     });
 
   } catch (err) {
@@ -70,7 +71,8 @@ export const signin = async (req, res, next) => {
 
     res.status(200).json({
       message: 'Login successful',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      token
     });
 
   } catch (err) {
