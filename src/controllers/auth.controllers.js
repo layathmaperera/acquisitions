@@ -41,7 +41,11 @@ export const signup = async (req, res, next) => {
     logger.error('Error creating account', err);
 
     if (err.message === 'User already exists') {
-      return res.status(400).json({ message: err.message });
+      return res.status(400).json({ status: 'error', message: err.message });
+    }
+
+    if (err.message?.includes('Failed query')) {
+      return res.status(503).json({ status: 'error', message: 'Database service unavailable. Please try again later.' });
     }
 
     next(err);
@@ -79,7 +83,11 @@ export const signin = async (req, res, next) => {
     logger.error('Error during login', err);
 
     if (err.message === 'User not found' || err.message === 'Invalid password') {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ status: 'error', message: 'Invalid email or password' });
+    }
+
+    if (err.message?.includes('Failed query')) {
+      return res.status(503).json({ status: 'error', message: 'Database service unavailable. Please try again later.' });
     }
 
     next(err);

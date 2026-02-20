@@ -72,15 +72,9 @@ export const createUser = async ({ name, email, password, role = 'citizen' }) =>
     console.log('User created successfully:', newUser); // Debug log
     return newUser;
   } catch (error) {
-    // Log the FULL error object
-    console.error('Full error:', JSON.stringify(error, null, 2));
-    console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
-    console.error('Error detail:', error.detail);
-    console.error('Error cause:', error.cause);
-
     const isUniqueViolation =
       error?.code === '23505' ||
+      error?.cause?.code === '23505' ||
       error?.cause?.sourceError?.code === '23505' ||
       (typeof error?.message === 'string' && error.message.toLowerCase().includes('duplicate'));
 

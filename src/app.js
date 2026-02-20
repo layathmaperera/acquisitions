@@ -30,19 +30,47 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK',timestamp: new Date().toISOString(),uptime: process.uptime() });
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString(), uptime: process.uptime() });
 
 });
-app.get('/api',(req,res)=>{
-  res.status(200).json({message:'Acquisitions API is running'});
+app.get('/api', (req, res) => {
+  res.status(200).json({ message: 'Acquisitions API is running' });
 });
 
 
 
 
-app.use('/api/auth',authRoutes);
-app.use('/api/users',usersRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 
+// 404 handler - catch unmatched routes
+app.all('{*path}', (req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: `Cannot find ${req.originalUrl} on this server`
+  });
+});
 
+// Global error handler - returns JSON instead of HTML
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const status = err.status || 'error';
+
+  logger.error(`${err.message}`, { stack: err.stack });
+
+  if (process.env.NODE_ENV === 'development') {
+    return res.status(statusCode).json({
+      status,
+      message: err.message,
+      stack: err.stack
+    });
+  }
+
+  // Production - don't leak internals
+  res.status(statusCode).json({
+    status,
+    message: statusCode === 500 ? 'Internal server error' : err.message
+  });
+});
 
 export default app;
