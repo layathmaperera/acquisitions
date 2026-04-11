@@ -25,7 +25,11 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "dev:docker": "sh ./scripts/dev.sh",
-    "prod:docker": "sh ./scripts/prod.sh"
+    "prod:docker": "sh ./scripts/prod.sh",
+    "pm2:start": "pm2 start ecosystem.config.cjs --env production",
+    "pm2:stop": "pm2 stop acquisition-api",
+    "pm2:logs": "pm2 logs acquisition-api",
+    "pm2:status": "pm2 status"
   },
   "repository": {
     "type": "git",
