@@ -87,6 +87,7 @@ Note: `#Services/*` is capitalized in the import map.
 ## Environment Variables
 
 Required in `.env`:
+
 - `DATABASE_URL` - Neon PostgreSQL connection string
 - `JWT_SECRET` - Secret for signing JWT tokens
 - `JWT_EXPIRES_IN` - Token expiration (default: `1d`)

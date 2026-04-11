@@ -1,4 +1,4 @@
-export const formatValidationError = (error) => {
+export const formatValidationError = error => {
   if (!error || !error.issues) return 'Validation error';
 
   if (Array.isArray(error.issues)) {

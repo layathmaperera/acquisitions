@@ -16,11 +16,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(morgan('combined', {
-  stream: {
-    write: (message) => logger.info(message.trim()),
-  },
-}));
+app.use(
+  morgan('combined', {
+    stream: {
+      write: message => logger.info(message.trim()),
+    },
+  })
+);
 
 app.use(secrityMiddleware);
 
@@ -30,15 +32,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString(), uptime: process.uptime() });
-
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
 });
 app.get('/api', (req, res) => {
   res.status(200).json({ message: 'Acquisitions API is running' });
 });
-
-
-
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
@@ -47,12 +49,12 @@ app.use('/api/users', usersRoutes);
 app.all('{*path}', (req, res) => {
   res.status(404).json({
     status: 'error',
-    message: `Cannot find ${req.originalUrl} on this server`
+    message: `Cannot find ${req.originalUrl} on this server`,
   });
 });
 
 // Global error handler - returns JSON instead of HTML
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   const statusCode = err.statusCode || 500;
   const status = err.status || 'error';
 
@@ -62,14 +64,14 @@ app.use((err, req, res, next) => {
     return res.status(statusCode).json({
       status,
       message: err.message,
-      stack: err.stack
+      stack: err.stack,
     });
   }
 
   // Production - don't leak internals
   res.status(statusCode).json({
     status,
-    message: statusCode === 500 ? 'Internal server error' : err.message
+    message: statusCode === 500 ? 'Internal server error' : err.message,
   });
 });
 

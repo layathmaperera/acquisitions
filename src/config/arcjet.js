@@ -1,7 +1,5 @@
 import arcjet, { shield, detectBot, slidingWindow } from '@arcjet/node';
 
-
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 const rules = [

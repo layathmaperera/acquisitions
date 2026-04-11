@@ -1,10 +1,17 @@
 import logger from '#config/logger.js';
-import { getAllUsers, getUserById as getUserByIdService, updateUser as updateUserService, deleteUser as deleteUserService } from '#Services/users.services.js';
-import { userIdSchema, updateUserSchema } from '#validations/users.validations.js';
+import {
+  getAllUsers,
+  getUserById as getUserByIdService,
+  updateUser as updateUserService,
+  deleteUser as deleteUserService,
+} from '#Services/users.services.js';
+import {
+  userIdSchema,
+  updateUserSchema,
+} from '#validations/users.validations.js';
 
 //logging,validatations
 export const fetchAllUsers = async (req, res) => {
-
   try {
     logger.info('Fetching users...');
 
@@ -15,10 +22,9 @@ export const fetchAllUsers = async (req, res) => {
       users: allUsers,
       count: allUsers.length,
     });
-  }catch(err) {
+  } catch (err) {
     logger.error('Error fetching users', err);
     // next(err);
-
   }
 };
 
@@ -90,13 +96,17 @@ export const updateUser = async (req, res) => {
     // Users can only update their own information
     if (req.user.id !== id && req.user.role !== 'admin') {
       logger.warn(`User ${req.user.id} attempted to update user ${id}`);
-      return res.status(403).json({ message: 'Forbidden: You can only update your own information' });
+      return res.status(403).json({
+        message: 'Forbidden: You can only update your own information',
+      });
     }
 
     // Only admins can change roles
     if (updates.role && req.user.role !== 'admin') {
       logger.warn(`Non-admin user ${req.user.id} attempted to change role`);
-      return res.status(403).json({ message: 'Forbidden: Only admins can change user roles' });
+      return res
+        .status(403)
+        .json({ message: 'Forbidden: Only admins can change user roles' });
     }
 
     const updatedUser = await updateUserService(id, updates);
@@ -141,7 +151,9 @@ export const deleteUser = async (req, res) => {
     // Users can only delete their own account, admins can delete any
     if (req.user.id !== id && req.user.role !== 'admin') {
       logger.warn(`User ${req.user.id} attempted to delete user ${id}`);
-      return res.status(403).json({ message: 'Forbidden: You can only delete your own account' });
+      return res
+        .status(403)
+        .json({ message: 'Forbidden: You can only delete your own account' });
     }
 
     const deletedUser = await deleteUserService(id);

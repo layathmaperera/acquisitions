@@ -13,7 +13,7 @@ export const signup = async (req, res, next) => {
     if (!validationResult.success) {
       return res.status(400).json({
         error: 'Validation failed',
-        details: formatValidationError(validationResult.error)
+        details: formatValidationError(validationResult.error),
       });
     }
 
@@ -23,20 +23,31 @@ export const signup = async (req, res, next) => {
     const user = await createUser({ name, email, password });
 
     // Create JWT token
-    const token = jwttoken.sign({ id: user.id, email: user.email, role: user.role });
+    const token = jwttoken.sign({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
 
     logger.info(`User registration successful: ${email}`);
 
     // Set token in httpOnly cookie
-    cookies.set(res, 'token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    cookies.set(res, 'token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
 
     // Respond with user info
     res.status(201).json({
       message: 'Account created successfully',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
-      token
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token,
     });
-
   } catch (err) {
     logger.error('Error creating account', err);
 
@@ -45,7 +56,10 @@ export const signup = async (req, res, next) => {
     }
 
     if (err.message?.includes('Failed query')) {
-      return res.status(503).json({ status: 'error', message: 'Database service unavailable. Please try again later.' });
+      return res.status(503).json({
+        status: 'error',
+        message: 'Database service unavailable. Please try again later.',
+      });
     }
 
     next(err);
@@ -59,7 +73,7 @@ export const signin = async (req, res, next) => {
     if (!validationResult.success) {
       return res.status(400).json({
         error: 'Validation failed',
-        details: formatValidationError(validationResult.error)
+        details: formatValidationError(validationResult.error),
       });
     }
 
@@ -67,27 +81,46 @@ export const signin = async (req, res, next) => {
 
     const user = await authenticateUser({ email, password });
 
-    const token = jwttoken.sign({ id: user.id, email: user.email, role: user.role });
+    const token = jwttoken.sign({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
 
     logger.info(`User login successful: ${email}`);
 
-    cookies.set(res, 'token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    cookies.set(res, 'token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
 
     res.status(200).json({
       message: 'Login successful',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
-      token
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token,
     });
-
   } catch (err) {
     logger.error('Error during login', err);
 
-    if (err.message === 'User not found' || err.message === 'Invalid password') {
-      return res.status(401).json({ status: 'error', message: 'Invalid email or password' });
+    if (
+      err.message === 'User not found' ||
+      err.message === 'Invalid password'
+    ) {
+      return res
+        .status(401)
+        .json({ status: 'error', message: 'Invalid email or password' });
     }
 
     if (err.message?.includes('Failed query')) {
-      return res.status(503).json({ status: 'error', message: 'Database service unavailable. Please try again later.' });
+      return res.status(503).json({
+        status: 'error',
+        message: 'Database service unavailable. Please try again later.',
+      });
     }
 
     next(err);
@@ -101,7 +134,6 @@ export const signout = async (req, res, next) => {
     logger.info('User logged out successfully');
 
     res.status(200).json({ message: 'Logout successful' });
-
   } catch (err) {
     logger.error('Error during logout', err);
     next(err);

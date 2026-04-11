@@ -7,7 +7,10 @@ export const authenticate = (req, res, next) => {
     let token;
 
     // Check Authorization header first (Bearer token)
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
       token = req.headers.authorization.split(' ')[1];
     }
 
@@ -18,7 +21,9 @@ export const authenticate = (req, res, next) => {
 
     if (!token) {
       logger.warn('Authentication failed - no token provided');
-      return res.status(401).json({ status: 'error', message: 'Unauthorized: No token provided' });
+      return res
+        .status(401)
+        .json({ status: 'error', message: 'Unauthorized: No token provided' });
     }
 
     const decoded = jwttoken.verify(token);
@@ -26,11 +31,13 @@ export const authenticate = (req, res, next) => {
     next();
   } catch (err) {
     logger.warn('Authentication failed - invalid token', err.message);
-    return res.status(401).json({ status: 'error', message: 'Unauthorized: Invalid token' });
+    return res
+      .status(401)
+      .json({ status: 'error', message: 'Unauthorized: Invalid token' });
   }
 };
 
-export const requireRole = (roles) => {
+export const requireRole = roles => {
   return (req, res, next) => {
     if (!req.user) {
       logger.warn('Role check failed - no user in request');
@@ -38,8 +45,13 @@ export const requireRole = (roles) => {
     }
 
     if (!roles.includes(req.user.role)) {
-      logger.warn(`Access denied for user ${req.user.id} with role ${req.user.role}`);
-      return res.status(403).json({ status: 'error', message: 'Forbidden: Insufficient permissions' });
+      logger.warn(
+        `Access denied for user ${req.user.id} with role ${req.user.role}`
+      );
+      return res.status(403).json({
+        status: 'error',
+        message: 'Forbidden: Insufficient permissions',
+      });
     }
 
     next();

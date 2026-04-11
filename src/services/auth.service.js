@@ -3,8 +3,8 @@ import bcrypt from 'bcrypt';
 import logger from '#config/logger.js';
 import { db } from '#config/database.js';
 import { users } from '#models/user.model.js';
-import { eq } from "drizzle-orm";
-export const hashPassword = async (password) => {
+import { eq } from 'drizzle-orm';
+export const hashPassword = async password => {
   try {
     return bcrypt.hash(password, 10);
   } catch (error) {
@@ -24,10 +24,7 @@ export const comparePassword = async (password, hashedPassword) => {
 
 export const authenticateUser = async ({ email, password }) => {
   try {
-    const rows = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
+    const rows = await db.select().from(users).where(eq(users.email, email));
 
     const user = rows[0];
 
@@ -48,7 +45,12 @@ export const authenticateUser = async ({ email, password }) => {
   }
 };
 
-export const createUser = async ({ name, email, password, role = 'citizen' }) => {
+export const createUser = async ({
+  name,
+  email,
+  password,
+  role = 'citizen',
+}) => {
   try {
     const hashedPassword = await hashPassword(password);
 
@@ -60,13 +62,13 @@ export const createUser = async ({ name, email, password, role = 'citizen' }) =>
         name,
         email,
         password: hashedPassword,
-        role
+        role,
       })
       .returning({
         id: users.id,
         name: users.name,
         email: users.email,
-        role: users.role
+        role: users.role,
       });
 
     console.log('User created successfully:', newUser); // Debug log
@@ -76,7 +78,8 @@ export const createUser = async ({ name, email, password, role = 'citizen' }) =>
       error?.code === '23505' ||
       error?.cause?.code === '23505' ||
       error?.cause?.sourceError?.code === '23505' ||
-      (typeof error?.message === 'string' && error.message.toLowerCase().includes('duplicate'));
+      (typeof error?.message === 'string' &&
+        error.message.toLowerCase().includes('duplicate'));
 
     if (isUniqueViolation) {
       logger.info('Create user aborted - user already exists', { email });

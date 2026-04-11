@@ -89,19 +89,19 @@ docker compose -f docker-compose.prod.yml logs -f
 
 ### Development
 
-| Variable | Description |
-|----------|-------------|
-| `NEON_API_KEY` | Neon API key |
-| `NEON_PROJECT_ID` | Neon project ID |
+| Variable           | Description                          |
+| ------------------ | ------------------------------------ |
+| `NEON_API_KEY`     | Neon API key                         |
+| `NEON_PROJECT_ID`  | Neon project ID                      |
 | `PARENT_BRANCH_ID` | Parent branch for ephemeral branches |
-| `JWT_SECRET` | JWT signing secret |
+| `JWT_SECRET`       | JWT signing secret                   |
 
 ### Production
 
-| Variable | Description |
-|----------|-------------|
+| Variable       | Description                  |
+| -------------- | ---------------------------- |
 | `DATABASE_URL` | Neon Cloud connection string |
-| `JWT_SECRET` | JWT signing secret |
+| `JWT_SECRET`   | JWT signing secret           |
 
 ## How It Works
 
@@ -120,9 +120,9 @@ npm run dev
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| POST | `/api/auth/sign-up` | Register |
-| POST | `/api/auth/sign-in` | Login |
-| POST | `/api/auth/sign-out` | Logout |
+| Method | Endpoint             | Description  |
+| ------ | -------------------- | ------------ |
+| GET    | `/health`            | Health check |
+| POST   | `/api/auth/sign-up`  | Register     |
+| POST   | `/api/auth/sign-in`  | Login        |
+| POST   | `/api/auth/sign-out` | Logout       |

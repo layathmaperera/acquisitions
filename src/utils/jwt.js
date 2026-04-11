@@ -8,7 +8,7 @@ if (!JWT_SECRET) {
 }
 
 export const jwttoken = {
-  sign: (payload) => {
+  sign: payload => {
     try {
       return jwt.sign(payload, JWT_SECRET, {
         expiresIn: JWT_EXPIRES_IN,
@@ -19,7 +19,7 @@ export const jwttoken = {
     }
   },
 
-  verify: (token) => {
+  verify: token => {
     if (!token) {
       throw new Error('Token is required');
     }

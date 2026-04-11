@@ -6,23 +6,24 @@ import { eq } from 'drizzle-orm';
 export const getAllUsers = async () => {
   // Logic to get all users
 
-  try{
-    return await db.select({
-      id:users.id,
-      email:users.email,
-      name:users.name,
-      role:users.role,
-      created_at:users.created_at,
-      updated_at:users.updated_at
-    }).from(users);
-
-  }catch (e){
+  try {
+    return await db
+      .select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        role: users.role,
+        created_at: users.created_at,
+        updated_at: users.updated_at,
+      })
+      .from(users);
+  } catch (e) {
     logger.error('Error getting all users', e);
     throw e;
   }
 };
 
-export const getUserById = async (id) => {
+export const getUserById = async id => {
   try {
     const rows = await db
       .select({
@@ -31,7 +32,7 @@ export const getUserById = async (id) => {
         name: users.name,
         role: users.role,
         created_at: users.created_at,
-        updated_at: users.updated_at
+        updated_at: users.updated_at,
       })
       .from(users)
       .where(eq(users.id, id));
@@ -55,7 +56,7 @@ export const updateUser = async (id, updates) => {
       .update(users)
       .set({
         ...updates,
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(eq(users.id, id))
       .returning({
@@ -64,7 +65,7 @@ export const updateUser = async (id, updates) => {
         name: users.name,
         role: users.role,
         created_at: users.created_at,
-        updated_at: users.updated_at
+        updated_at: users.updated_at,
       });
 
     return updatedUser;
@@ -74,7 +75,7 @@ export const updateUser = async (id, updates) => {
   }
 };
 
-export const deleteUser = async (id) => {
+export const deleteUser = async id => {
   try {
     const [deletedUser] = await db
       .delete(users)
