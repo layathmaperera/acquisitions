@@ -10,7 +10,7 @@
     "#models/*": "./src/models/*",
     "#routes/*": "./src/routes/*",
     "#utils/*": "./src/utils/*",
-    "#Services/*": "./src/Services/*",
+    "#Services/*": "./src/services/*",
     "#validations/*": "./src/validations/*"
   },
   "scripts": {
